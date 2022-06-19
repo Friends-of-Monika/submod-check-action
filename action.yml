@@ -1,0 +1,79 @@
+name: "Submod Check"
+description: "Perform a code check and headless MAS run on repository"
+
+inputs:
+
+  renpy-version:
+    default: "6.99.12.4"
+    description: >
+      Ren'Py SDK version to use. If not provided, 6.99.12.4 is used by default.
+
+  mas-version:
+    description: >
+      Monika After Story version to use. If not provided, latest stable release 
+      will be used by default.
+
+  ddlc-url:
+    required: true
+    description: >
+      Link to download Doki Doki Literature Club from. 
+      
+      Due to limitations of Team Salvato IP Guidelines, you are not allowed to
+      host/publicly distribute Doki Doki Literature Club.
+      
+      In order to use this action, you would have to
+      upload Doki Doki Literature Club release package (Windows version) to
+      your own file server (or Google Drive) for this action to pull it.
+
+      It is recommended that you use GitHub repository secrets to pass download
+      URL to this action.
+
+      Supported sources are:
+        
+        * HTTP/HTTPS (Google Drive links are supported);
+        * FTP/SFTP
+  
+  submod-path:
+    description: >
+      Path to directory containing submod script files. If not provided, action 
+      will detect its location automatically (might be inaccurate.)
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: "Cache MDK"
+      id: "cache-mdk"
+      uses: "actions/cache@v3"
+      with:
+        paths: |
+          ${{ github.action_path }}/mas
+          ${{ github.action_path }}/renpy
+
+    - if: "!steps.cache-mdk.outputs.cache-hit" 
+      name: "Install Python"
+      uses: "actions/setup-python@v4"
+      with:
+        python-version: "3.10"
+      
+    - if: "!steps.cache-mdk.outputs.cache-hit"
+      name: "Install GDown"
+      shell: "bash"
+      run: "pip install gdown"
+
+    - if: "!steps.cache-mdk.outputs.cache-hit"
+      name: "Install MDK"
+      shell: "bash"
+      run: |
+        "${{ github.action_path }}/steps/install-mdk.sh" \
+          "${{ github.action_path }}" \
+          "${{ inputs.renpy-version }}" \
+          "${{ inputs.mas-version }}" \
+          "${{ inputs.ddlc-url }}"
+
+    - name: "Run checks"
+      shell: "bash"
+      run: |
+        "${{ github.action_path }}/steps/run-checks.sh" \
+          "${{ github.action_path }}" \
+          "${{ inputs.submod-path }}"
