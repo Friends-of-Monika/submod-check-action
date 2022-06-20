@@ -42,6 +42,11 @@ runs:
   using: "composite"
   steps:
 
+    - name: "Mask DDLC download URL"
+      shell: "bash"
+      run: |
+        echo "::add-mask::${{ inputs.ddlc-url }}"
+
     - name: "Store MAS release or fall back to latest"
       id: "mas-release-or-fallback"
       shell: "bash"
