@@ -46,13 +46,8 @@ rm -r "$temp"
 
 temp="$(mktemp -d)"
 
-if [ -z "$mas_version" ]; then
-    curl -qL# "$(curl -sL "https://api.github.com/repos/monika-after-story/monikamoddev/releases/latest" | \
-        perl -lne 'print $1 if /"browser_download_url": "(.+?-Mod\.zip)"/')" > "$temp/mas.zip"
-else
-    curl -qL# "$(curl -sL "https://api.github.com/repos/monika-after-story/monikamoddev/releases/tags/$mas_version" | \
-        perl -lne 'print $1 if /"browser_download_url": "(.+?-Mod\.zip)"/')" > "$temp/mas.zip"
-fi
+curl -qL# "$(curl -sL "https://api.github.com/repos/monika-after-story/monikamoddev/releases/tags/$mas_version" | \
+    perl -lne 'print $1 if /"browser_download_url": "(.+?-Mod\.zip)"/')" > "$temp/mas.zip"
 
 unzip -qo "$temp/mas.zip" -d "$mas/game"
 
