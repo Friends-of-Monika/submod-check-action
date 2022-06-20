@@ -24,6 +24,12 @@ mkdir -p "$mod"
 #shellcheck disable=SC2164
 (cd "$submod_path"; find . -iname "*.rpy" -exec cp -r --parents \{\} "$mod" \;)
 
+cleanup() {
+    rm -rf "$mod"
+    rm "$mas/errors.txt" "$mas/compile.log"
+}
+trap cleanup EXIT
+
 "$renpy/renpy.sh" "$mas" compile 2>&1 \
     | tail -n +2 \
     | tee "$mas/compile.log" \
@@ -32,5 +38,4 @@ mkdir -p "$mod"
     | perl -spe 'print $1 if /^\Q$mod\E(.*)/' \
         -- -mod="$(realpath --relative-to="$mod" "$mod")"
 
-trap 'rm -rf "$mod"' EXIT
 if [ -f "$mas/errors.txt" ]; then exit 1; fi
