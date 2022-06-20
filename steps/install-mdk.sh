@@ -19,7 +19,7 @@ mas="$gh_action_path/mas"
 mkdir "$renpy"
 temp="$(mktemp -d)"
 
-curl -fq# "https://www.renpy.org/dl/$renpy_version/renpy-$renpy_version-sdk.tar.bz2" | tar xjC "$temp"
+curl -fs "https://www.renpy.org/dl/$renpy_version/renpy-$renpy_version-sdk.tar.bz2" | tar xjC "$temp"
 find "$temp" -mindepth 2 -maxdepth 2 -exec mv \{\} "$gh_action_path/renpy" \;
 
 rm -r "$temp"
@@ -31,7 +31,7 @@ mkdir "$mas"
 temp="$(mktemp -d)"
 
 case "$ddlc_url" in
-    http?://*drive.google.com/*) gdown --fuzzy -O "$temp/ddlc.zip" "$ddlc_url";;
+    http?://*drive.google.com/*) gdown --fuzzy -q -O "$temp/ddlc.zip" "$ddlc_url";;
     http?://*|ftp://*|sftp://*) curl -fq# -O "$temp/ddlc.zip" "$ddlc_url";;
 esac
 
@@ -46,7 +46,7 @@ rm -r "$temp"
 
 temp="$(mktemp -d)"
 
-curl -qL# "$(curl -sL "https://api.github.com/repos/monika-after-story/monikamoddev/releases/tags/$mas_version" | \
+curl -sL "$(curl -sL "https://api.github.com/repos/monika-after-story/monikamoddev/releases/tags/$mas_version" | \
     perl -lne 'print $1 if /"browser_download_url": "(.+?-Mod\.zip)"/')" > "$temp/mas.zip"
 
 unzip -qo "$temp/mas.zip" -d "$mas/game"

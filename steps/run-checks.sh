@@ -32,5 +32,5 @@ mkdir -p "$mod"
     | perl -spe 'print $1 if /^\Q$mod\E(.*)/' \
         -- -mod="$(realpath --relative-to="$mod" "$mod")"
 
-rm -rf "$mod"
+trap 'rm -rf "$mod"' EXIT
 if [ -f "$mod/errors.txt" ]; then exit 1; fi

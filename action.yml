@@ -42,11 +42,6 @@ runs:
   using: "composite"
   steps:
 
-    - name: "Mask DDLC download URL"
-      shell: "bash"
-      run: |
-        echo "::add-mask::${{ inputs.ddlc-url }}"
-
     - name: "Store MAS release or fall back to latest"
       id: "mas-release-or-fallback"
       shell: "bash"
@@ -72,13 +67,19 @@ runs:
           ${{ github.action_path }}/mas
           ${{ github.action_path }}/renpy
 
-    - if: "!steps.cache-mdk.outputs.cache-hit" 
+    - if: |
+        !steps.cache-mdk.outputs.cache-hit && 
+          (startsWith(inputs.ddlc-url, "https://drive.google.com") ||
+           startsWith(inputs.ddlc-url, "http://drive.google.com"))
       name: "Install Python"
       uses: "actions/setup-python@v4"
       with:
         python-version: "3.10"
       
-    - if: "!steps.cache-mdk.outputs.cache-hit"
+    - if: |
+        !steps.cache-mdk.outputs.cache-hit && 
+          (startsWith(inputs.ddlc-url, "https://drive.google.com") ||
+           startsWith(inputs.ddlc-url, "http://drive.google.com"))
       name: "Install GDown"
       shell: "bash"
       run: "pip install gdown"
