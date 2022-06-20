@@ -31,7 +31,7 @@ mkdir "$mas"
 temp="$(mktemp -d)"
 
 case "$ddlc_url" in
-    http?://*drive.google.com) gdown --fuzzy -O "$temp/ddlc.zip" "$ddlc_url";;
+    http?://*drive.google.com/*) gdown --fuzzy -O "$temp/ddlc.zip" "$ddlc_url";;
     http?://*|ftp://*|sftp://*) curl -fq# -O "$temp/ddlc.zip" "$ddlc_url";;
 esac
 
