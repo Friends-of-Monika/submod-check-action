@@ -22,7 +22,7 @@ renpy="$gh_action_path/renpy"
 mkdir -p "$mod"
 
 #shellcheck disable=SC2164
-(cd "$mod"; find . -iname "*.rpy" -exec cp -r --parents \{\} "$mod" \;)
+(cd "$submod_path"; find . -iname "*.rpy" -exec cp -r --parents \{\} "$mod" \;)
 
 "$renpy/renpy.sh" "$mas" compile 2>&1 \
     | tail -n +2 \
