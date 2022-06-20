@@ -19,7 +19,7 @@ renpy="$gh_action_path/renpy"
 
 ## Checks run
 
-mkdir "$mod"
+mkdir -p "$mod"
 
 #shellcheck disable=SC2164
 (cd "$mod"; find . -iname "*.rpy" -exec cp -r --parents \{\} "$mod" \;)
@@ -27,9 +27,10 @@ mkdir "$mod"
 "$renpy/renpy.sh" "$mas" compile 2>&1 \
     | tail -n +2 \
     | tee "$mas/compile.log" \
-    | perl -sne 'print if (/^\Q$mod_install\E.*: \w*Warning/ || !/^game\//)' \
-        -- -mod_install="$(realpath --relative-to="$mod" "$mod")" \
-    | perl -spe 'print $1 if /^\Q$mod_install\E(.*)/' \
-        -- -mod_install="$(realpath --relative-to="$mod" "$mod")"
+    | perl -sne 'print if (/^\Q$mod\E.*: \w*Warning/ || !/^game\//)' \
+        -- -mod="$(realpath --relative-to="$mod" "$mod")" \
+    | perl -spe 'print $1 if /^\Q$mod\E(.*)/' \
+        -- -mod="$(realpath --relative-to="$mod" "$mod")"
 
+rm -rf "$mod"
 if [ -f "$mod/errors.txt" ]; then exit 1; fi
