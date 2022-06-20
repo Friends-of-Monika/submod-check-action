@@ -73,6 +73,8 @@ runs:
 
     - name: "Run checks"
       shell: "bash"
+      env:
+        SDL_AUDIODRIVER: dummy
       run: |
         "${{ github.action_path }}/steps/run-checks.sh" \
           "${{ github.action_path }}" \
