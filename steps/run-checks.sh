@@ -33,4 +33,4 @@ mkdir -p "$mod"
         -- -mod="$(realpath --relative-to="$mod" "$mod")"
 
 trap 'rm -rf "$mod"' EXIT
-if [ -f "$mod/errors.txt" ]; then exit 1; fi
+if [ -f "$mas/errors.txt" ]; then exit 1; fi
