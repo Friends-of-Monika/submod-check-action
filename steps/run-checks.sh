@@ -26,7 +26,7 @@ mkdir -p "$mod"
 
 cleanup() {
     rm -rf "$mod"
-    rm "$mas/errors.txt" "$mas/compile.log"
+    rm -f "$mas/errors.txt" "$mas/compile.log"
 }
 trap cleanup EXIT
 
@@ -38,4 +38,4 @@ trap cleanup EXIT
     | perl -spe 'print $1 if /^\Q$mod\E(.*)/' \
         -- -mod="$(realpath --relative-to="$mod" "$mod")"
 
-if [ -f "$mas/errors.txt" ]; then exit 1; fi
+if [ -f "$mas/errors.txt" ] || [ -f "$mas/traceback.txt" ]; then exit 1; fi
