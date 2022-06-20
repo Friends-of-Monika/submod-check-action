@@ -26,7 +26,7 @@ mkdir -p "$mod"
 
 cleanup() {
     rm -rf "$mod"
-    rm -f "$mas/errors.txt" "$mas/compile.log"
+    rm -f "$mas/errors.txt" "$mas/traceback.txt" "$mas/compile.log"
 }
 trap cleanup EXIT
 
