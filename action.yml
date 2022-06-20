@@ -68,8 +68,8 @@ runs:
           ${{ github.action_path }}/renpy
 
     - if: |
-        !steps.cache-mdk.outputs.cache-hit && 
-          (startsWith(inputs.ddlc-url, "https://drive.google.com") ||
+        !steps.cache-mdk.outputs.cache-hit && \
+          (startsWith(inputs.ddlc-url, "https://drive.google.com") || \
            startsWith(inputs.ddlc-url, "http://drive.google.com"))
       name: "Install Python"
       uses: "actions/setup-python@v4"
@@ -77,8 +77,8 @@ runs:
         python-version: "3.10"
       
     - if: |
-        !steps.cache-mdk.outputs.cache-hit && 
-          (startsWith(inputs.ddlc-url, "https://drive.google.com") ||
+        !steps.cache-mdk.outputs.cache-hit && \
+          (startsWith(inputs.ddlc-url, "https://drive.google.com") || \
            startsWith(inputs.ddlc-url, "http://drive.google.com"))
       name: "Install GDown"
       shell: "bash"
