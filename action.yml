@@ -63,7 +63,7 @@ runs:
       uses: "actions/cache@v3"
       with:
         key: "mdk-cache-${{ steps.cache-key-hash.outputs.hash }}"
-        paths: |
+        path: |
           ${{ github.action_path }}/mas
           ${{ github.action_path }}/renpy
 
