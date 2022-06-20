@@ -56,7 +56,7 @@ runs:
         echo "::set-output name=hash::$( \
             echo "${{ inputs.renpy-version }}${{ steps.mas-release-or-fallback.outputs.mas-release }}${{ inputs.ddlc-url }}" \
               | sha256sum | cut -f1 -d" " \
-        )
+        )"
 
     - name: "Cache MDK"
       id: "cache-mdk"
