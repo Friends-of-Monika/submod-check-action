@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 ## Parameters
 
 gh_action_path="$1"
