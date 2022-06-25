@@ -7,7 +7,7 @@ set -e
 gh_action_path="$1"
 renpy_version="$2"
 mas_version="$3"
-ddlc_url="$4"
+ddlc_url="$(printf "%s" "$4" | sed 's/ *$//')"
 
 
 ## Directory structure
