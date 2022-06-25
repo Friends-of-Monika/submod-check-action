@@ -34,7 +34,7 @@ temp="$(mktemp -d)"
 
 case "$ddlc_url" in
     http?://*drive.google.com/*) gdown --fuzzy -q -O "$temp/ddlc.zip" "$ddlc_url";;
-    http?://*|ftp://*|sftp://*) curl -fq# -o "$temp/ddlc.zip" "$ddlc_url";;
+    http?://*|ftp://*|sftp://*) curl -fq -o "$temp/ddlc.zip" "$ddlc_url";;
 esac
 
 unzip -qo "$temp/ddlc.zip" -d "$temp"
