@@ -5,52 +5,23 @@ set -e
 ## Parameters
 
 gh_action_path="$1"
-renpy_version="$2"
-mas_version="$3"
-ddlc_url="$(printf "%s" "$4" | sed 's/ *$//')"
 
 
 ## Directory structure
 
 renpy="$gh_action_path/renpy"
 mas="$gh_action_path/mas"
-
-
-## Ren'Py SDK installation
-
-mkdir "$renpy"
 temp="$(mktemp -d)"
 
-curl -fs "https://www.renpy.org/dl/$renpy_version/renpy-$renpy_version-sdk.tar.bz2" | tar xjC "$temp"
-find "$temp" -mindepth 2 -maxdepth 2 -exec mv \{\} "$gh_action_path/renpy" \;
 
-rm -r "$temp"
+## mas-mdk image pulling
 
+docker pull ghcr.io/friends-of-monika/mas-mdk:latest
+docker run -d --rm --name mdk ghcr.io/friends-of-monika/mas-mdk:latest \
+    /bin/sh -c "sleep 999999999"
 
-## DDLC pull
+docker export mdk -o "$temp/mdk.tar"
+tar -xvf "$temp/mdk.tar" --directory "$temp" mdk
 
-mkdir "$mas"
-temp="$(mktemp -d)"
-
-case "$ddlc_url" in
-    http?://*drive.google.com/*) gdown --fuzzy -q -O "$temp/ddlc.zip" "$ddlc_url";;
-    http?://*|ftp://*|sftp://*) curl -fs -o "$temp/ddlc.zip" "$ddlc_url";;
-esac
-
-unzip -qo "$temp/ddlc.zip" -d "$temp"
-rm "$temp/ddlc.zip"
-find "$temp" -mindepth 2 -maxdepth 2 -exec mv \{\} "$mas" \;
-
-rm -r "$temp"
-
-
-## MAS pull
-
-temp="$(mktemp -d)"
-
-curl -sL "$(curl -sL "https://api.github.com/repos/monika-after-story/monikamoddev/releases/tags/$mas_version" | \
-    perl -lne 'print $1 if /"browser_download_url": "(.+?-Mod\.zip)"/')" > "$temp/mas.zip"
-
-unzip -qo "$temp/mas.zip" -d "$mas/game"
-
-rm -r "$temp"
+mv "$temp/mdk/mas" "$mas"
+mv "$temp/mdk/renpy" "$renpy"
