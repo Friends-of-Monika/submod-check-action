@@ -2,91 +2,19 @@ name: "Submod Check"
 description: "Perform a code check and headless MAS run on repository"
 
 inputs:
-
-  renpy-version:
-    default: "6.99.12.4"
-    description: >
-      Ren'Py SDK version to use. If not provided, 6.99.12.4 is used by default.
-
-  mas-version:
-    description: >
-      Monika After Story version to use. If not provided, latest stable release 
-      will be used by default.
-
-  ddlc-url:
-    required: true
-    description: >
-      Link to download Doki Doki Literature Club from. 
-      
-      Due to limitations of Team Salvato IP Guidelines, you are not allowed to
-      host/publicly distribute Doki Doki Literature Club.
-      
-      In order to use this action, you would have to
-      upload Doki Doki Literature Club release package (Windows version) to
-      your own file server (or Google Drive) for this action to pull it.
-
-      It is recommended that you use GitHub repository secrets to pass download
-      URL to this action.
-
-      Supported sources are:
-        
-        * HTTP/HTTPS (Google Drive links are supported);
-        * FTP/SFTP
-  
   submod-path:
     description: >
-      Path to directory containing submod script files. If not provided, action 
+      Path to directory containing submod script files. If not provided, action
       will detect its location automatically (might be inaccurate.)
 
 runs:
   using: "composite"
   steps:
-
-    - name: "Store MAS release or fall back to latest"
-      id: "mas-release-or-fallback"
-      shell: "bash"
-      run: |
-        "${{ github.action_path }}/steps/store-mas-release-or-fallback.sh" \
-          "${{ inputs.mas-release }}"
-
-    - name: "Calculate MDK cache key hash"
-      id: "cache-key-hash"
-      shell: "bash"
-      run: |
-        echo "::set-output name=hash::$( \
-            echo "${{ inputs.renpy-version }}${{ steps.mas-release-or-fallback.outputs.mas-release }}${{ inputs.ddlc-url }}" \
-              | sha256sum | cut -f1 -d" " \
-        )"
-
-    - name: "Cache MDK"
-      id: "cache-mdk"
-      uses: "actions/cache@v3"
-      with:
-        key: "mdk-cache-${{ steps.cache-key-hash.outputs.hash }}"
-        path: |
-          ${{ github.action_path }}/mas
-          ${{ github.action_path }}/renpy
-
-    - if: "!steps.cache-mdk.outputs.cache-hit"
-      name: "Install Python"
-      uses: "actions/setup-python@v4"
-      with:
-        python-version: "3.10"
-      
-    - if: "!steps.cache-mdk.outputs.cache-hit"
-      name: "Install GDown"
-      shell: "bash"
-      run: "pip install gdown"
-
-    - if: "!steps.cache-mdk.outputs.cache-hit"
-      name: "Install MDK"
+    - name: "Pull MDK"
       shell: "bash"
       run: |
         "${{ github.action_path }}/steps/install-mdk.sh" \
-          "${{ github.action_path }}" \
-          "${{ inputs.renpy-version }}" \
-          "${{ steps.mas-release-or-fallback.outputs.mas-release }}" \
-          "${{ inputs.ddlc-url }}"
+          "${{ github.action_path }}"
 
     - name: "Run checks"
       shell: "bash"
