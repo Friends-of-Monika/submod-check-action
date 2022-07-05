@@ -13,5 +13,5 @@ Add this step to your workflow `steps` section (make sure it goes
 ```yaml
 # ... the rest of your workflow .yml file ...
 - name: "Check"
-   uses: "friends-of-monika/submod-check-action@v2"
+  uses: "friends-of-monika/submod-check-action@v2"
 ```
